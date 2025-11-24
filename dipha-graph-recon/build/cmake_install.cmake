@@ -1,4 +1,4 @@
-# Install script for directory: /home/saumgupta/dmt-crf-public-code/dipha-graph-recon
+# Install script for directory: /home/klem/struct-uncertainty/dipha-graph-recon
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/saumgupta/dmt-crf-public-code/dipha-graph-recon/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/klem/struct-uncertainty/dipha-graph-recon/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,0 +1,21 @@
+{
+    "common":{
+        "activity": "train",
+        "num_classes":1,
+        "img_folder": "",
+        "gt_folder": "",
+        "training_folder": "C:\\Users\\klem\\Documents\\TrainingData\\training_data_sharper_edges\\training",
+        "val_folder": "C:\\Users\\klem\\Documents\\TrainingData\\training_data_sharper_edges\\validation",
+        "segmodel_checkpoint_restore":"C:\\Users\\klem\\PycharmProjects\\PytorchTest\\edgedetector\\weights\\default_model.pth",
+        "dataname":"SEM",
+        "network":"edgedetector"
+        },
+    "train":{
+        "train_datalist":"Z:\\TrainingData\\training_data_sharper_edges\\training\\training.lst",
+        "validation_datalist":"Z:\\TrainingData\\training_data_sharper_edges\\validation\\validation.lst",
+        "output_folder":"./output",
+        "learning_rate":0.001,
+        "num_epochs":50,
+        "save_every": 10
+    }
+}

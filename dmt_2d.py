@@ -22,7 +22,7 @@ class DMT:
     '''
     def __init__(self, lh_map, Th=0.05):
 
-        self.save_dir = "/data/saumgupta/miccai-tutorial"
+        self.save_dir = "./output"
         self.dipha_output_filename = os.path.join(self.save_dir,'inputs/complex.bin')
         self.vert_filename = os.path.join(self.save_dir,'inputs/vert.txt')
         self.dipha_edge_filename = os.path.join(self.save_dir,'inputs/dipha.edges')
@@ -87,11 +87,11 @@ class DMT:
                         vert_file.write(str(i) + ' ' + str(j) + ' ' + str(k) + ' ' + str(int(-im_cube[i, j, k] * 255)) + '\n')
             vert_file.close()
 
-        subprocess.call(["mpiexec", "-n", "1", str(os.path.join(self.save_dir,"dipha-graph-recon/build/dipha")), str(os.path.join(self.save_dir,"inputs/complex.bin")), str(os.path.join(self.save_dir,"inputs/diagram.bin")), str(os.path.join(self.save_dir,"inputs/dipha.edges")), str(self.nx), str(self.ny), str(self.nz)])
+        subprocess.call(["mpiexec", "-n", "1", str("dipha-graph-recon/build/dipha"), str(os.path.join(self.save_dir,"inputs/complex.bin")), str(os.path.join(self.save_dir,"inputs/diagram.bin")), str(os.path.join(self.save_dir,"inputs/dipha.edges")), str(self.nx), str(self.ny), str(self.nz)])
 
-        subprocess.call([str(os.path.join(self.save_dir,"src/loop.out")), str(self.dipha_edge_filename), str(self.dipha_edge_txt)])
+        subprocess.call([str("src/loop.out"), str(self.dipha_edge_filename), str(self.dipha_edge_txt)])
 
-        subprocess.call([str(os.path.join(self.save_dir,"src/manifold.out")), str(self.vert_filename), str(self.dipha_edge_txt), str(self.Th), str(os.path.join(self.save_dir,"output/"))])
+        subprocess.call([str("src/manifold.out"), str(self.vert_filename), str(self.dipha_edge_txt), str(self.Th), str(os.path.join(self.save_dir,"output/"))])
 
 
     def compute_features(self):
