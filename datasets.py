@@ -306,7 +306,6 @@ class TrainDataset(Dataset):
 
     def __getitem__(self, idx):
         # get data sample
-        print("idx: ", idx)
         image_path, label_path = self.data_index[idx]
 
         # load data

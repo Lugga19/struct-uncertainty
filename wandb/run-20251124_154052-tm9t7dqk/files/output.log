@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/klem/Documents/struct-uncertainty/train_adapted.py", line 283, in <module>
+    train_func_2d(mydict)
+  File "/home/klem/Documents/struct-uncertainty/train_adapted.py", line 194, in train_func_2d
+    unc_pred_mu, unc_pred_sigma = unc_regressor(imgbatch,unc_input)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/klem/Documents/struct-uncertainty/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/klem/Documents/struct-uncertainty/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: UncertaintyModel_GNN.forward() missing 2 required positional arguments: 'edge_index' and 'edge_weights'

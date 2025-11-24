@@ -4,6 +4,7 @@ import torch
 import numpy as np
 import argparse, json
 import os, glob, sys, shutil
+import wandb
 from time import time
 
 from dataloader import DRIVE
@@ -12,13 +13,13 @@ from unet.unet_model import UNet
 from edgedetector.edgedetector import LDC
 
 from dmt_trainer import getData_train, getData_val
-from unc_model import UncertaintyModel_GNN
+from unc_model import UncertaintyModel, UncertaintyModel_GNN
 from utilities import MSE_VAR
 
 
 class Args():
     def __init__(self, list_name):
-        self.attribute = list_name
+        self.train_list = list_name
         self.train_data = "SEM"  # add crop_img true
 
 
@@ -46,6 +47,10 @@ def parse_func(args):
 
         mydict['num_epochs'] = int(params['train']['num_epochs']) + 1
         mydict['save_every'] = params['train']['save_every']
+        # Optional early stopping parameters
+        # If 'early_stopping_patience' > 0, early stopping is enabled
+        mydict['early_stopping_patience'] = int(params['train'].get('early_stopping_patience', 0))
+        mydict['early_stopping_min_delta'] = float(params['train'].get('early_stopping_min_delta', 0.0))
 
     else:
         print("Wrong activity chosen")
@@ -99,19 +104,19 @@ def train_func_2d(mydict):
         mean_bgr_train = [97.38495689751913] * 3
 
         dataset_train = TrainDataset(mydict['training_folder'],
-                                     img_width=768,
-                                     img_height=768,
+                                     img_width=128,
+                                     img_height=128,
                                      mean_bgr=mean_bgr_train,
                                      train_mode='train',
                                      arg=Args("training.lst")
                                      )
         mean_bgr_test = [96.22038432767576] * 3
         dataset_val = TrainDataset(mydict['val_folder'],
-                                  test_data="SEM",
-                                  img_width=768,
-                                  img_height=768,
+                                  img_width=128,
+                                  img_height=128,
                                   mean_bgr=mean_bgr_test,
-                                  args=Args("validation.lst"),
+                                    train_mode='test',
+                                  arg=Args("validation.lst"),
                                   )
         # training_set = SEM(mydict['train_datalist'], mydict['training_folder'], "train")
         # validation_set = SEM(mydict['validation_datalist'], mydict['val_folders'], "val")  # full image takes too long
@@ -139,7 +144,7 @@ def train_func_2d(mydict):
         feature_extractor = LDC().to(device)
 
     #unc_regressor = UncertaintyModel_GNN(in_channels=in_channels, num_features=36, hidden_units=48).float().to(device)
-    unc_regressor = UncertaintyModel_GNN(num_features=36, hidden_units=48).float().to(device)
+    unc_regressor = UncertaintyModel(in_channels=in_channels, num_features=36, hidden_units=48).float().to(device)
 
     # Optimizer
     optimizer = torch.optim.Adam(unc_regressor.parameters(), lr=mydict['learning_rate'], weight_decay=0)
@@ -164,7 +169,13 @@ def train_func_2d(mydict):
     best_dict = {}
     best_dict['epoch'] = 0
     best_dict['val_loss'] = None
-    print("Let the training begin!")    
+    # Early stopping state
+    patience = mydict.get('early_stopping_patience', 7)
+    min_delta = mydict.get('early_stopping_min_delta', 0.0001)
+    epochs_no_improve = 0
+    use_early_stopping = patience > 0
+    print("Let the training begin!")
+    wandb.init(project="structural-uncertainty", config=mydict)
 
     for epoch in range(mydict['num_epochs']):
         torch.cuda.empty_cache() # cleanup
@@ -240,18 +251,35 @@ def train_func_2d(mydict):
         validation_end_time = time()
         print("End of epoch validation took {} seconds.\nAverage validation loss: {}\nNumber of samples in this val-loop: {}\nLearning rate: {}".format(validation_end_time - validation_start_time, avg_val_loss, cntvar, optimizer.param_groups[0]['lr']))
 
-        # check for best epoch and save it if it is and print
+        wandb.log({"Epoch": epoch, "Train Loss": avg_train_loss, "Validation Loss": avg_val_loss, "Learning Rate": optimizer.param_groups[0]['lr']})
+
+        # Check for best epoch and update early stopping counters
         if epoch == 0:
             best_dict['epoch'] = epoch
             best_dict['val_loss'] = avg_val_loss
+            # save initial best model
+            torch.save(unc_regressor.state_dict(), os.path.join(mydict['output_folder'], "uncertainty_model_best.pth"))
         else:
-            if best_dict['val_loss'] < avg_val_loss:
+            # improvement check (note: larger avg_val_loss is better in this codebase)
+            if avg_val_loss > best_dict['val_loss'] + min_delta:
                 best_dict['val_loss'] = avg_val_loss
                 best_dict['epoch'] = epoch
+                epochs_no_improve = 0
+                torch.save(unc_regressor.state_dict(), os.path.join(mydict['output_folder'], "uncertainty_model_best.pth"))
+                artifact = wandb.Artifact(
+                    name=f"dmt-uncertainty-model-epoch-{epoch}",
+                    type="model",
+                )
+            else:
+                epochs_no_improve += 1
 
-        if epoch == best_dict['epoch']:
-            torch.save(unc_regressor.state_dict(), os.path.join(mydict['output_folder'], "uncertainty_model_best.pth"))
         print("Best epoch so far: {}\n".format(best_dict))
+
+        # Early stopping: stop if no improvement for 'patience' epochs
+        if use_early_stopping and epochs_no_improve >= patience:
+            print(f"Early stopping: no improvement for {epochs_no_improve} epochs (patience={patience}). Stopping training.")
+            wandb.log({"EarlyStopping/StoppedEpoch": epoch, "EarlyStopping/Patience": patience, "EarlyStopping/EpochsNoImprove": epochs_no_improve})
+            break
         # save checkpoint for save_every
         if epoch % mydict['save_every'] == 0:
             torch.save(unc_regressor.state_dict(), os.path.join(mydict['output_folder'], "uncertainty_model_epoch" + str(epoch) + ".pth"))
@@ -271,4 +299,5 @@ if __name__ == "__main__":
         activity, mydict = parse_func(args)
 
     if activity == "train":
+        wandb.login()
         train_func_2d(mydict)

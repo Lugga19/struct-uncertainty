@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/klem/struct-uncertainty/dipha-graph-recon/include -I/home/klem/struct-uncertainty/dipha-graph-recon/externals -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi
+CXX_INCLUDES = -I/home/klem/Documents/struct-uncertainty/dipha-graph-recon/include -I/home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi
 
 CXX_FLAGS = -O3 -DNDEBUG   -std=c++11
 

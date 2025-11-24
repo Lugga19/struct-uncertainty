@@ -1,7 +1,7 @@
 CMakeFiles/dualize.dir/src/dualize.cpp.o: \
- /home/klem/struct-uncertainty/dipha-graph-recon/src/dualize.cpp \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/src/dualize.cpp \
  /usr/include/stdc-predef.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/includes.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/includes.h \
  /usr/include/c++/13/iostream /usr/include/c++/13/bits/requires_hosted.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
@@ -247,7 +247,7 @@ CMakeFiles/dualize.dir/src/dualize.cpp.o: \
  /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx/info_inln.h \
  /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx/win_inln.h \
  /usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/ompi/mpi/cxx/file_inln.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/mem_usage/mem_usage.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/mem_usage/mem_usage.h \
  /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
@@ -260,37 +260,37 @@ CMakeFiles/dualize.dir/src/dualize.cpp.o: \
  /usr/include/x86_64-linux-gnu/sys/resource.h \
  /usr/include/x86_64-linux-gnu/bits/resource.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_rusage.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_util.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_util.h \
  /usr/include/c++/13/fstream \
  /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
  /usr/include/c++/13/bits/fstream.tcc /usr/include/c++/13/functional \
  /usr/include/c++/13/bits/std_function.h /usr/include/c++/13/iterator \
  /usr/include/c++/13/bits/stream_iterator.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_seqsort.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_splitters.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_alltoall.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_merge.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/globals.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/mpi_utils.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/element_distribution.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/macros.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/file_types.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/heap_column.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/distributed_vector.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/flat_column_stack.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/write_once_array_of_arrays.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/write_once_column_array.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/abstract_weighted_cell_complex.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/weighted_cubical_complex.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/weighted_explicit_complex.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/full_rips_complex.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/sparse_rips_complex.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/get_filtration_to_cell_map.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/get_cell_to_filtration_map.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/generate_unreduced_columns.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/reduction_kernel.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/dualize_explicit_complex.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/compute_reduced_columns.h \
- /home/klem/struct-uncertainty/dipha-graph-recon/include/dipha/outputs/save_persistence_diagram.h
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_seqsort.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_splitters.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_alltoall.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/externals/psort-1.0/src/psort_merge.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/globals.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/mpi_utils.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/element_distribution.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/macros.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/file_types.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/heap_column.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/distributed_vector.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/flat_column_stack.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/write_once_array_of_arrays.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/data_structures/write_once_column_array.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/abstract_weighted_cell_complex.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/weighted_cubical_complex.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/weighted_explicit_complex.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/full_rips_complex.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/inputs/sparse_rips_complex.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/get_filtration_to_cell_map.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/get_cell_to_filtration_map.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/generate_unreduced_columns.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/reduction_kernel.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/dualize_explicit_complex.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/algorithms/compute_reduced_columns.h \
+ /home/klem/Documents/struct-uncertainty/dipha-graph-recon/include/dipha/outputs/save_persistence_diagram.h
