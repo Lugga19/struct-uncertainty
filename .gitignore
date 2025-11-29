@@ -2,3 +2,5 @@
 dipha-graph-recon/
 __pycache__/
 wandb/
+results/
+predicitons/
