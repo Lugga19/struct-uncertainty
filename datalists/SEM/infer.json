@@ -1,0 +1,18 @@
+{
+    "common":{
+        "activity": "test",
+        "num_classes":1,
+        "folder": "/home/klem/Documents/TestDataSet",
+        "img_folder": "",
+        "gt_folder": "",
+        "segmodel_checkpoint_restore":"/home/klem/Documents/struct-uncertainty/edgedetector/weights/default_model.pth",
+        "uncmodel_checkpoint_restore":"/home/klem/Documents/struct-uncertainty/output/uncertainty_model_best.pth",
+        "dataname":"SEM",
+        "network":"edgedetector",
+        "gpu":"true"
+    },
+    "test":{
+        "output_folder":"predictions",
+        "MCSamples":10
+    }
+}

@@ -9,6 +9,9 @@ from time import time
 
 from dataloader import DRIVE_folder
 from unet.unet_model import UNet
+from edgedetector.edgedetector import LDC
+from datasets import TestDataset
+from create_seg_map import build_final_segmentation
 import torch
 torch.cuda.empty_cache()
 from torchvision.utils import save_image
@@ -16,7 +19,7 @@ from PIL import Image
 
 from dmt_trainer import getData_val, reconstruct_uncertainty_heatmap 
 
-from unc_model import UncertaintyModel_GNN
+from unc_model import UncertaintyModel, UncertaintyModel_GNN
 
 def parse_func(args):
     ### Reading the parameters json file
@@ -27,7 +30,7 @@ def parse_func(args):
     activity = params['common']['activity']
     mydict = {}
     mydict['num_classes'] = int(params['common']['num_classes'])
-    mydict['folder'] = [params['common']['img_folder'], params['common']['gt_folder']]
+    mydict['folder'] = [params['common']['folder'], params['common']['img_folder'], params['common']['gt_folder']]
     mydict['segmodel_checkpoint_restore'] = params['common']['segmodel_checkpoint_restore']
     mydict['uncmodel_checkpoint_restore'] = params['common']['uncmodel_checkpoint_restore']
     mydict['dataname'] = params['common']['dataname']
@@ -80,24 +83,35 @@ if __name__ == "__main__":
     if not os.path.exists(os.path.join(mydict['output_folder'],'output')):
         os.makedirs(os.path.join(mydict['output_folder'], 'output'))
 
+
+
+    mean_bgr_test = [96.22038432767576] * 3
     # Test Data
     if mydict['dataname'].lower() == "drive":
         test_set = DRIVE_folder(mydict['folder'])
         n_channels = 3
         in_channels = 5
     
-    elif mydict['dataname'].lower() == "fill-your-own-dataset":
-        pass
+    elif mydict['dataname'].lower() == "sem":
+        n_channels = 3
+        in_channels = 5
+        test_set = TestDataset(mydict['folder'][0],
+                       "SEM",
+                       mean_bgr_test,
+                       128,
+                       128,
+                       "test.lst")
 
 
     test_generator = torch.utils.data.DataLoader(test_set,batch_size=1,shuffle=False,num_workers=1, drop_last=False)
 
     if mydict['network'].lower() == "unet":
         feature_extractor = UNet(n_channels=n_channels, n_classes=mydict['num_classes'], start_filters=64)
-    elif mydict['network'].lower() == "fill-your-own-network":
-        pass
+    elif mydict['network'].lower() == "edgedetector":
+        feature_extractor = LDC().to(device)
 
-    binary_classifier = UncertaintyModel_GNN(in_channels=in_channels, num_features=36, hidden_units=48).float().to(device)
+
+    binary_classifier = UncertaintyModel(in_channels=in_channels, num_features=36, hidden_units=48).float().to(device)
 
     if mydict['gpu']:
         feature_extractor = feature_extractor.to(device)
@@ -131,7 +145,7 @@ if __name__ == "__main__":
             x = x.to(device, non_blocking=True)
             y_gt = y_gt.to(device, non_blocking=True)
 
-            y_patchlikelihood = feature_extractor(x)
+            y_patchlikelihood = feature_extractor(x)[-1]
 
             imgbatch, unc_input, unc_gt = getData_val(mydict['num_classes'], mydict['output_folder'], x, y_patchlikelihood, y_gt)
 
@@ -149,25 +163,23 @@ if __name__ == "__main__":
                     temp = binary_classifier(imgbatch, unc_input) # contains both mu and log_var
                     unc_pred_mu.append(torch.squeeze(temp[0], dim=1).detach().cpu().numpy()) 
                     unc_pred_logvar.append(torch.squeeze(temp[1], dim=1).detach().cpu().numpy())
-
-                print(torch.squeeze(y_gt).detach().cpu().numpy().shape)
                 
                 seg_map = reconstruct_uncertainty_heatmap(mydict['output_folder'], unc_pred_mu, unc_pred_logvar, torch.squeeze(y_gt).detach().cpu().numpy().shape, unc_gt.detach().cpu().numpy(),filename[0]) #seg_map is NCHW
 
             # seg_map is heatmap so save with cv2
             filename = filename[0]
-            tempdir = os.path.join(mydict['output_folder'], filename.split('/')[-2])
+            tempdir = os.path.join(mydict['output_folder'], filename)
             if not os.path.exists(tempdir):
                 os.makedirs(tempdir)
 
-            save_image(x, os.path.join(tempdir, 'img_' + filename.split('/')[-1]  + '.png'))
-            save_image(torch.squeeze(y_gt*255), os.path.join(tempdir, 'gt_' + filename.split('/')[-1] + '.png'))
+            save_image(x, os.path.join(tempdir, 'img_' + filename  + '.png'))
+            save_image(torch.squeeze(y_gt*255), os.path.join(tempdir, 'gt_' + filename + '.png'))
 
             ax = sns.heatmap(seg_map, cmap=plt.cm.coolwarm,vmin=0, vmax=1)
             ax.set_axis_off()
 
             plt.show()
-            plt.savefig(os.path.join(tempdir, 'heatmap_x_' + filename.split('/')[-1] + '.png'), bbox_inches='tight', pad_inches=0)
+            plt.savefig(os.path.join(tempdir, 'heatmap_x_' + filename + '.png'), bbox_inches='tight', pad_inches=0)
             plt.clf()
 
             # save heatmap as npy and likelihood as binary --- to overlay later
@@ -184,8 +196,16 @@ if __name__ == "__main__":
             bb_npy = (bb_npy*255.).astype(np.uint8)
             im_pred = Image.fromarray(bb_npy)
 
-            im_pred.save(os.path.join(tempdir, 'backbone_' + filename.split('/')[-1] + '.png'))
-            np.save(os.path.join(tempdir, 'heatmap_' + filename.split('/')[-1] + '.npy'), hm_npy)
+            im_pred.save(os.path.join(tempdir, 'backbone_' + filename + '.png'))
+            np.save(os.path.join(tempdir, 'heatmap_' + filename + '.npy'), hm_npy)
 
+            seg_final = build_final_segmentation(os.path.join(tempdir, 'backbone_' + filename + '.png'),
+                                     os.path.join(tempdir, 'heatmap_' + filename + '.npy'),
+                                     heatmap_threshold=0.0)
+            final_img = Image.fromarray((seg_final * 255).astype(np.uint8))
+            final_img.save(os.path.join("./results/pred", filename + '.png'))
+            save_image(torch.squeeze(y_gt*255), os.path.join("./results/gt", filename.replace("_SEM_emulation", "_edge") + '.png'))
+
+            
             print("{} Done!".format(filename))
             

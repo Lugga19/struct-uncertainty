@@ -320,14 +320,13 @@ def reconstruct_uncertainty_heatmap(datadir, unc_pred_mu, unc_pred_logvar, img_s
 
     manifold_filepath = os.path.join(datadir, "output/dimo_manifold.txt")
     vert_filepath = os.path.join(datadir, "output/dimo_vert.txt")
-
     unc_pred_mu = np.array(unc_pred_mu) 
     unc_pred_logvar = np.array(unc_pred_logvar)
     
     unc_pred_epistemic = np.var(unc_pred_mu, axis=0)
     unc_pred_aleatoric = np.exp(np.mean(unc_pred_logvar, axis=0))
     unc_pred_avg = np.mean(unc_pred_mu, axis=0)
-
+    
     assert np.squeeze(unc_gt).shape == np.squeeze(unc_pred_avg).shape
     assert np.squeeze(unc_pred_aleatoric).shape == np.squeeze(unc_pred_avg).shape
     assert np.squeeze(unc_pred_epistemic).shape == np.squeeze(unc_pred_avg).shape
@@ -366,7 +365,8 @@ def reconstruct_uncertainty_heatmap(datadir, unc_pred_mu, unc_pred_logvar, img_s
 
             mini_image[int(vert_info[v0,0]), int(vert_info[v0,1])] = eps + np.abs(1. - unc_gt[manifold_cnt+1])
             mini_image[int(vert_info[v1,0]), int(vert_info[v1,1])] = eps + np.abs(1. - unc_gt[manifold_cnt+1])
-
+            
+            
     assert manifold_cnt+1 == unc_pred_avg.shape[0]
 
     writefile.close()

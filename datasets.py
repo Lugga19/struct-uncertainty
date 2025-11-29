@@ -6,6 +6,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import json
+import ast
 import matplotlib.pyplot as plt
 
 DATASET_NAMES = [
@@ -98,7 +99,8 @@ class TestDataset(Dataset):
             if True: #self.test_data.upper()=='SEM':
 
                 with open(list_name) as f:
-                    files = json.load(f)
+                    content = f.read()
+                    files = ast.literal_eval(content)
                 for pair in files:
                     tmp_img = pair[0]
                     tmp_gt = pair[1]
@@ -120,7 +122,7 @@ class TestDataset(Dataset):
             image_path = self.data_index[idx][0]
         label_path = None if self.test_data == "CLASSIC" else self.data_index[idx][1]
         img_name = os.path.basename(image_path)
-        file_name = os.path.splitext(img_name)[0] + ".png"
+        file_name = os.path.splitext(img_name)[0]
 
         # base dir
         if self.test_data.upper() == 'CLASSIC':
@@ -140,7 +142,7 @@ class TestDataset(Dataset):
         image, label = self.transform(img=image, gt=label)
         im_shape = [image.shape[1], image.shape[2]]
 
-        return image, label
+        return image, label, file_name
 
         #return dict(images=image, labels=label, file_names=file_name, image_shape=im_shape)
 
@@ -150,8 +152,8 @@ class TestDataset(Dataset):
 
         crop_size = self.img_height if self.img_height == self.img_width else None
         img = np.array(img, dtype=np.float32)
-        #img -= self.mean_bgr
-        img /= 255.
+        img -= self.mean_bgr
+        #img /= 255.
         # Centered crop instead of resize
         if i_w > crop_size and i_h > crop_size:
 
